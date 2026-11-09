@@ -120,7 +120,7 @@ root.addEventListener("click",e=>{const b=e.target.closest("[data-project]");if(
 const journey=document.getElementById('camera-journey'),viewport=document.querySelector('.camera-viewport'),world=document.querySelector('.camera-world'),paper=document.getElementById('paper-focus'),hint=document.querySelector('.camera-hint');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');let queued=false,active=false;
 const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
-function update(){queued=false;if(reduced.matches){paper.classList.add('active');return}
+function update(){queued=false;if(viewport.classList.contains('three-ready'))return;if(reduced.matches){paper.classList.add('active');return}
 const distance=Math.max(1,journey.offsetHeight-innerHeight),t=clamp(-journey.getBoundingClientRect().top/distance);
 const retreat=ease(t/.34),tilt=ease((t-.17)/.40),push=ease((t-.55)/.27),focus=ease((t-.72)/.25);
 world.style.setProperty('--retreat',retreat.toFixed(4));world.style.setProperty('--tilt',tilt.toFixed(4));world.style.setProperty('--push',push.toFixed(4));
