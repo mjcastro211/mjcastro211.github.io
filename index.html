@@ -54,8 +54,35 @@ box-shadow:inset 0 0 0 7px #8b6844,inset 0 0 0 12px #2a1c13,inset 0 0 95px 35px 
 .camera-viewport:after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 40%,#090b09a6 100%);opacity:calc(1 - var(--paper-opacity,0) * .6)}
 @media(max-width:650px){.camera-journey{height:370svh}.paper-focus .desk{padding:20px 10px 50px}.paper-focus .paper{padding:26px 18px}.paper-focus .desk-caption{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.camera-journey{height:auto;min-height:100svh}.camera-viewport{position:relative;height:auto;min-height:100svh;overflow:visible}.camera-world{display:none}.paper-focus{position:relative;transform:none;opacity:1;pointer-events:auto;overflow:visible}.paper-focus .desk{padding-top:80px}}
+
+/* Eye-level dolly backward, followed by a natural head tilt and desk approach. */
+.camera-journey{height:530svh}
+.camera-viewport{perspective:1600px;perspective-origin:50% 44%;background:#10120f}
+.camera-world{transform-origin:50% 45%;transform:translateZ(calc(var(--retreat,0) * -920px)) translateY(calc(var(--retreat,0) * -5vh)) rotateX(calc(var(--tilt,0) * -65deg)) scale(calc(1 + var(--push,0) * .5));filter:brightness(calc(1 - var(--retreat,0) * .12))}
+.camera-wall{inset:-15vh -17vw 0;transform:translateZ(-110px)}
+.scene-board{border:clamp(28px,3.5vw,58px) solid #3e2a1b;background:
+radial-gradient(ellipse at 28% 26%,#c8d4c31a,transparent 45%),
+radial-gradient(ellipse at 72% 79%,#b7c9b00e,transparent 37%),
+repeating-linear-gradient(177deg,transparent 0 5px,#d5dfd208 6px 7px,transparent 8px 31px),
+repeating-linear-gradient(92deg,#172a24 0 140px,#1a3029 145px 290px,#14251f 295px 440px);
+box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px #030a08c9,0 25px 45px #000a}
+.scene-board:before{opacity:.8;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.46'/%3E%3C/svg%3E");mix-blend-mode:screen}
+.scene-board:after{inset:0;background:radial-gradient(ellipse at 51% 45%,transparent 30%,#000a 100%),repeating-linear-gradient(170deg,transparent 0 35px,#fff2 36px 37px,transparent 38px 90px);opacity:.45;mix-blend-mode:normal}
+.scene-board .board-content{filter:drop-shadow(0 0 1px #fff7);transform:rotate(-1.4deg)}
+.scene-board h1{font-size:clamp(67px,12vw,170px);color:#e7e6d7;text-shadow:1px 0 #fff8,-1px 2px #c8c9ba88,3px -2px 4px #c8c9ba38;letter-spacing:.015em}
+.scene-board .chalktray{height:21px;background:linear-gradient(#8d6a48 0 20%,#4c301e 30%,#1e150f 100%);box-shadow:0 -4px 8px #0006,0 8px 15px #000a}
+.scene-board .chalktray:after{content:"";position:absolute;width:62px;height:7px;background:#e6dfcf;bottom:10px;left:16%;border-radius:3px;box-shadow:80px 1px 0 -1px #d6d2c0}
+.camera-floor{top:100%;height:200svh}
+.scene-desk{top:13%;box-shadow:0 35px 55px #000c,0 0 0 16px #3c2618,0 0 0 20px #241810}
+.paper-focus{transform:translateY(calc((1 - var(--paper-scale,0)) * 45vh)) rotateX(calc((1 - var(--paper-scale,0)) * 19deg)) scale(calc(.28 + var(--paper-scale,0) * .72));transform-origin:50% 60%;transition:none}
+.paper-focus .desk{background:radial-gradient(ellipse at 45% 20%,#b1845838,transparent 58%),repeating-linear-gradient(91deg,#523321 0 125px,#64412c 126px 130px,#765139 131px 255px);padding-top:55px}
+.paper-focus .desk:before{display:block;opacity:.4}
+.paper-focus .paper{box-shadow:15px 22px 35px #000a,2px 3px 3px #0006;background:linear-gradient(110deg,#f1e9d5,#e7dbc4 75%,#d8cbb4)}
+.camera-viewport:before{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 42%,#08090880 100%);opacity:calc(1 - var(--paper-opacity,0));}
+@media(max-width:650px){.camera-journey{height:430svh}.camera-wall{inset:-8vh -30vw 0}.scene-board h1{font-size:clamp(55px,12vw,100px)}.paper-focus{transform:translateY(calc((1 - var(--paper-scale,0)) * 28vh)) scale(calc(.35 + var(--paper-scale,0) * .65))}}
+@media(prefers-reduced-motion:reduce){.camera-journey{height:auto}.camera-world{display:none}.paper-focus{transform:none}}
 </style></head><body>
-<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make something of it.</p></div><div class="scroll-cue">Scroll to lower your gaze<br>↓</div><div class="chalktray"></div></section>
+<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make something of it.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><main class="desk" id="desk"><div class="pencil" aria-hidden="true"></div><p class="desk-caption">A few pages from my desk · Michael Castro</p><article class="paper"><div class="paper-top"><div><h2>Michael Castro</h2><div class="subtitle">Electrical Engineering · University at Buffalo<br>Robotics / Embedded Systems / Accessibility</div></div><div class="stamp">Curriculum<br>Vitae</div></div>
 <section class="paper-section"><div class="paper-label">01 / About</div><p class="paper-copy">I'm an electrical engineering student interested in robotics, research, and building things that make technology more accessible. This is a working record of the projects I've learned from along the way.</p></section>
 <section class="paper-section"><div class="paper-label">02 / Selected projects & work — click a tab to read</div><div id="projects"></div></section>
@@ -82,16 +109,16 @@ function closeProject(){modal.classList.remove("open");modal.setAttribute("aria-
 root.addEventListener("click",e=>{const b=e.target.closest("[data-project]");if(b)openProject(b.dataset.project)});close.addEventListener("click",closeProject);modal.addEventListener("click",e=>{if(e.target===modal)closeProject()});document.addEventListener("keydown",e=>{if(!modal.classList.contains("open"))return;if(e.key==="Escape")closeProject();if(e.key==="Tab"){const controls=[...modal.querySelectorAll("button,a[href]")];const first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
 </script><script>
 (function(){
-const journey=document.getElementById('camera-journey'),world=document.querySelector('.camera-world'),paper=document.getElementById('paper-focus'),hint=document.querySelector('.camera-hint');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)');let queued=false,wasActive=false;
-const clamp=x=>Math.max(0,Math.min(1,x));const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+const journey=document.getElementById('camera-journey'),viewport=document.querySelector('.camera-viewport'),world=document.querySelector('.camera-world'),paper=document.getElementById('paper-focus'),hint=document.querySelector('.camera-hint');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');let queued=false,active=false;
+const clamp=x=>Math.max(0,Math.min(1,x));const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
 function update(){queued=false;if(reduced.matches){paper.classList.add('active');return}
 const distance=Math.max(1,journey.offsetHeight-innerHeight),t=clamp(-journey.getBoundingClientRect().top/distance);
-const tilt=smooth(t/.51),push=smooth((t-.46)/.38),focus=smooth((t-.64)/.32);
-world.style.setProperty('--tilt',tilt.toFixed(4));world.style.setProperty('--push',push.toFixed(4));
-paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));
+const retreat=ease(t/.34),tilt=ease((t-.17)/.40),push=ease((t-.55)/.27),focus=ease((t-.72)/.25);
+world.style.setProperty('--retreat',retreat.toFixed(4));world.style.setProperty('--tilt',tilt.toFixed(4));world.style.setProperty('--push',push.toFixed(4));
+paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));viewport.style.setProperty('--paper-opacity',focus.toFixed(4));
 hint.style.setProperty('--hint',String(clamp((.75-t)*5)));
-const active=t>.93;if(active!==wasActive){paper.classList.toggle('active',active);wasActive=active}
+const now=t>.955;if(now!==active){paper.classList.toggle('active',now);active=now}
 }
 addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});addEventListener('resize',update);update();
 })();
