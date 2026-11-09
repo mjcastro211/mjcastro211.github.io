@@ -170,9 +170,16 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 .paper-focus:not(.folder-open) .desk-caption{display:none!important}
 .three-ready .paper-focus:not(.folder-open) .folder-tile:hover{outline:none}
 .paper-focus:not(.folder-open) .folder-sheet{display:none!important}
+
+.exit-folder{display:none;position:sticky;top:12px;align-self:flex-start;z-index:25;margin:12px 12px -54px auto;flex-shrink:0;background:#eee3ca;color:#30251c;border:1px solid #826b4c;padding:12px 18px;box-shadow:0 3px 12px #0007;font:12px "DM Mono",monospace}
+.paper-focus.folder-open{display:block}
+.paper-focus.folder-open .exit-folder{display:block}
+.paper-focus.folder-open .folder-tray{top:64px}
+.paper-focus.folder-open .folder-sheet{scroll-margin-top:190px}
+@media(max-width:650px){.paper-focus.folder-open .folder-tray{top:64px}.paper-focus.folder-open .folder-sheet{scroll-margin-top:230px}}
 </style></head><body>
 <div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
-</div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
+</div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><button class="exit-folder" type="button" aria-label="Back to desk">← Back to desk</button><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
 <div class="folder-tray" aria-label="Portfolio folders">
 <button class="folder-tile" data-folder="projects" aria-pressed="false"><span class="folder-label">01 / Projects</span><span class="folder-hint">Research · Engineering</span></button>
 <button class="folder-tile" data-folder="experience" aria-pressed="false"><span class="folder-label">02 / Experience</span><span class="folder-hint">Work · Research</span></button>
@@ -201,7 +208,9 @@ const projects=[
 ];
 const folderSheet=document.querySelector('.folder-sheet'),folderTray=document.querySelector('.folder-tray');
 document.querySelectorAll('.folder-tile').forEach(button=>button.addEventListener('click',()=>{const choice=button.dataset.folder;document.querySelectorAll('.folder-tile').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('.folder-panel').forEach(p=>p.hidden=p.dataset.panel!==choice);folderSheet.hidden=false;document.getElementById('paper-focus').classList.add('folder-open');folderSheet.scrollIntoView({block:'nearest',behavior:'smooth'});}));
-document.querySelector('.close-folder').addEventListener('click',()=>{folderSheet.hidden=true;document.getElementById('paper-focus').classList.remove('folder-open');folderTray.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));folderTray.querySelector('button').focus()});
+function leaveFolder(){folderSheet.hidden=true;const focus=document.getElementById('paper-focus');focus.classList.remove('folder-open');focus.scrollTop=0;folderTray.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));folderTray.querySelector('button').focus({preventScroll:true})}
+document.querySelectorAll('.close-folder,.exit-folder').forEach(button=>button.addEventListener('click',leaveFolder));
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('detail').classList.contains('open')&&!folderSheet.hidden)leaveFolder()});
 const root=document.getElementById("projects");
 projects.forEach(p=>{const row=document.createElement("div");row.className="project";row.innerHTML='<div class="project-art" aria-hidden="true">'+drawings[p.drawing]+'</div><div><h3>'+p.title+'</h3><p>'+p.summary+'</p><button class="tab" type="button" data-project="'+p.id+'">Open project file ↗</button></div>';root.appendChild(row)});
 const modal=document.getElementById("detail"),close=document.getElementById("close");let previousFocus=null;
@@ -257,6 +266,33 @@ const frame=mat('#5d3921',.7);box(8.6,4.7,.24,frame,0,1.55,-5.12);
 const blackboard=new THREE.Mesh(new THREE.PlaneGeometry(8.32,4.42),new THREE.MeshStandardMaterial({map:chalk,roughness:1,metalness:0}));blackboard.position.set(0,1.55,-4.99);scene.add(blackboard);
 box(8.95,.16,.43,mat('#805b37'),0,-.86,-4.89);
 box(.42,.045,.07,mat('#d7d3bd'),-2.7,-.72,-4.58);
+
+/* Cork photo boards. Add image URLs to photos.json to fill the six pinned slots. */
+const photoBoards=[];
+[-5.75,5.75].forEach((x,side)=>{
+ box(2.35,4.55,.20,frame,x,1.55,-5.12);
+ const boardTexture=texture((ctx,w,h)=>{const r=rand(902+side);ctx.fillStyle='#a77d50';ctx.fillRect(0,0,w,h);for(let i=0;i<20000;i++){ctx.fillStyle=r()>.5?'#64482b30':'#e5bd852e';ctx.fillRect(r()*w,r()*h,2+r()*4,2+r()*3)}},512,1024);
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(2.12,4.3),new THREE.MeshStandardMaterial({map:boardTexture,roughness:1}));board.position.set(x,1.55,-4.99);scene.add(board);
+ for(let i=0;i<3;i++){
+  const placeholder=texture((ctx,w,h)=>{ctx.fillStyle='#e8dfca';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#ae9a7c';ctx.lineWidth=3;ctx.strokeRect(24,24,w-48,h-48);ctx.fillStyle='#87765c';ctx.textAlign='center';ctx.font='22px Georgia';ctx.fillText('Photo '+(side*3+i+1),w/2,h/2+8)},512,320);
+  const photo=new THREE.Mesh(new THREE.PlaneGeometry(1.65,1.03),new THREE.MeshStandardMaterial({map:placeholder,roughness:.9}));
+  photo.position.set(x,2.92-i*1.34,-4.96);photo.rotation.z=(i%2===0?.04:-.035)*(side===0?1:-1);scene.add(photo);photoBoards.push(photo);
+  const pin=new THREE.Mesh(new THREE.SphereGeometry(.045,12,8),mat('#8f3f32'));pin.position.set(x,photo.position.y+.43,-4.90);scene.add(pin);
+ }
+});
+fetch('./photos.json').then(response=>response.ok?response.json():[]).then(urls=>{
+ if(!Array.isArray(urls))return;
+ urls.slice(0,6).forEach((url,i)=>{if(typeof url!=='string'||!url.trim())return;
+ new THREE.TextureLoader().load(url,loaded=>{
+ loaded.colorSpace=THREE.SRGBColorSpace;
+ const aspect=loaded.image.width/loaded.image.height,target=1.65/1.03;
+ if(aspect>target){loaded.repeat.x=target/aspect;loaded.offset.x=(1-loaded.repeat.x)/2}
+ else{loaded.repeat.y=aspect/target;loaded.offset.y=(1-loaded.repeat.y)/2}
+ photoBoards[i].material.map=loaded;photoBoards[i].material.needsUpdate=true;dirty=true;
+ },undefined,()=>console.warn('Could not load board photo '+(i+1)));
+ });
+}).catch(()=>{});
+
 const floorWood=texture((c,w,h)=>{const r=rand(815);c.fillStyle='#37352f';c.fillRect(0,0,w,h);for(let i=0;i<700;i++){c.fillStyle='rgba(155,145,125,'+(r()*.09)+')';c.fillRect(r()*w,0,1+r()*3,h)}for(let i=1;i<12;i++){c.fillStyle='#211e1b88';c.fillRect(i*w/12,0,2,h)}},1024,512);
 const floor=box(40,.1,40,new THREE.MeshStandardMaterial({map:floorWood,roughness:.95}),0,-2.45,4);
 const deskMat=new THREE.MeshStandardMaterial({map:wood,color:'#d6ab7a',roughness:.7});
