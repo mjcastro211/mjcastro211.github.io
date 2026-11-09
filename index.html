@@ -153,6 +153,18 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
   .paper-focus .desk.folder-desk{background:repeating-linear-gradient(90deg,#765034 0 140px,#9a6b44 143px 150px,#b18352 151px 280px)!important}
 }
 
+
+/* In WebGL, the physical folders themselves are the navigation targets. */
+.three-ready .paper-focus:not(.folder-open){transform:none!important}
+.three-ready .paper-focus:not(.folder-open) .folder-tray{position:absolute;inset:0;width:100%;max-width:none;margin:0;padding:0;display:block;pointer-events:none}
+.three-ready .paper-focus:not(.folder-open) .folder-tile{
+ position:absolute;left:var(--folder-x);top:var(--folder-y);width:var(--folder-w);height:var(--folder-h);min-height:0;
+ padding:0;border:0;background:transparent!important;box-shadow:none;transform:none!important;pointer-events:auto;
+}
+.three-ready .paper-focus:not(.folder-open) .folder-tile:before{display:none}
+.three-ready .paper-focus:not(.folder-open) .folder-tile span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.three-ready .paper-focus:not(.folder-open) .folder-tile:hover{outline:2px solid #e8d2a080;outline-offset:-8px}
+.three-ready .paper-focus:not(.folder-open) .desk-caption{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);white-space:nowrap;margin:0}
 </style></head><body>
 <div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
@@ -247,11 +259,12 @@ box(4.15,.15,2.45,deskMat,0,-.45,2.25);
 for(const x of [-1.8,1.8])for(const z of [1.2,3.25])box(.13,1.85,.13,mat('#473022'),x,-1.42,z);
 const folderNames=['PROJECTS','EXPERIENCE','LEADERSHIP','ABOUT ME'];
 const folderPositions=[[-.88,1.75],[.88,1.75],[-.88,2.82],[.88,2.82]];
+const folderMeshes=[];
 folderNames.forEach((name,i)=>{
 const [x,z]=folderPositions[i];
 const folderMat=new THREE.MeshStandardMaterial({color:i%2===0?'#252322':'#302725',roughness:.92});
-const cover=new THREE.Mesh(new THREE.BoxGeometry(1.50,.028,.83),folderMat);cover.position.set(x,-.348,z);cover.rotation.y=(i%2===0?-.055:.045);scene.add(cover);
-const labelCanvas=texture((ctx,w,h)=>{ctx.clearRect(0,0,w,h);ctx.fillStyle='#cabb9c';ctx.fillRect(80,120,w-160,h-240);ctx.fillStyle='#302920';ctx.font='bold 46px Georgia';ctx.textAlign='center';ctx.fillText(name,w/2,h/2+14)},512,256);
+const cover=new THREE.Mesh(new THREE.BoxGeometry(1.50,.028,.83),folderMat);cover.position.set(x,-.348,z);cover.rotation.y=(i%2===0?-.055:.045);scene.add(cover);folderMeshes.push(cover);
+const labelCanvas=texture((ctx,w,h)=>{ctx.clearRect(0,0,w,h);ctx.fillStyle='#cabb9c';ctx.fillRect(45,65,w-90,h-130);ctx.fillStyle='#302920';ctx.font='bold 34px Georgia';ctx.textAlign='center';ctx.fillText(name,w/2,h/2+12)},512,256);
 const label=new THREE.Mesh(new THREE.PlaneGeometry(1.13,.39),new THREE.MeshBasicMaterial({map:labelCanvas,transparent:true,side:THREE.DoubleSide}));label.rotation.x=-Math.PI/2;label.rotation.z=cover.rotation.y;label.position.set(x,-.326,z);scene.add(label);
 });
 const notebook=box(.72,.028,1.15,mat('#3a4741'),-1.42,-.34,2.05);notebook.rotation.y=.16;
@@ -275,6 +288,16 @@ camera.position.y=lerp(camera.position.y,2.25,approach);
 camera.position.z=lerp(camera.position.z,3.25,approach);
 camera.lookAt(look);
 renderer.render(scene,camera);
+const folderButtons=document.querySelectorAll('.folder-tile');
+folderMeshes.forEach((mesh,i)=>{
+ const points=[[-.75,-.415],[.75,-.415],[.75,.415],[-.75,.415]].map(([x,z])=>mesh.localToWorld(new THREE.Vector3(x,.025,z)).project(camera));
+ const xs=points.map(p=>(p.x+1)*viewport.clientWidth/2),ys=points.map(p=>(1-p.y)*viewport.clientHeight/2);
+ const button=folderButtons[i];
+ button.style.setProperty('--folder-x',Math.min(...xs)+'px');
+ button.style.setProperty('--folder-y',Math.min(...ys)+'px');
+ button.style.setProperty('--folder-w',(Math.max(...xs)-Math.min(...xs))+'px');
+ button.style.setProperty('--folder-h',(Math.max(...ys)-Math.min(...ys))+'px');
+});
 const focus=ease((current-.65)/.16);
 paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));
 viewport.style.setProperty('--paper-opacity',focus.toFixed(4));
