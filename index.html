@@ -178,6 +178,56 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 .paper-focus.folder-open .folder-sheet{scroll-margin-top:190px}
 @media(max-width:650px){.paper-focus.folder-open .folder-tray{top:64px}.paper-focus.folder-open .folder-sheet{scroll-margin-top:230px}}
 .project-links{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}.project-links a{color:#703f30;border:1px solid #a99c88;padding:12px 16px;font:12px "DM Mono",monospace;text-decoration:none}.project-links a:hover{background:#ded2b9}.project:first-child .project-art{background:#b6ab88}
+
+/* Warm archival paper, quiet typography, and generous editorial spacing. */
+:root{--folio-paper:#f3eddf;--folio-ink:#302c25;--folio-muted:#7a7061;--folio-rule:#cbbfa9;--folio-accent:#80573e}
+.paper-focus .folder-sheet,.detail-sheet{
+ background-color:var(--folio-paper)!important;
+ background-image:radial-gradient(ellipse at 12% 0%,#fffdf5b0,transparent 65%),repeating-linear-gradient(0deg,#8c765003 0 1px,transparent 1px 4px)!important;
+ color:var(--folio-ink);border:1px solid #e1d7c4;
+ box-shadow:0 2px 3px #0002,0 18px 55px #0006;
+}
+.paper-focus .folder-sheet{padding:clamp(32px,6vw,76px);border-radius:2px;max-width:900px}
+.folder-sheet:before{inset:12px;border:1px solid #aa947b33}
+.folder-sheet .paper-top{border-bottom:1px solid var(--folio-rule);padding-bottom:30px;gap:24px}
+.folder-sheet .paper-top h2,.detail h2{font-family:"Libre Baskerville",Georgia,serif;font-weight:400;letter-spacing:-.055em;line-height:1.12}
+.folder-sheet .paper-top h2{font-size:clamp(38px,5vw,62px);margin-bottom:16px}
+.folder-sheet .subtitle{color:var(--folio-muted);font-size:9px;line-height:1.9;letter-spacing:.14em;max-width:360px}
+.folder-sheet .stamp{color:var(--folio-accent);border:1px solid #ae9275;transform:rotate(-6deg);padding:12px 14px;font-size:9px;letter-spacing:.16em}
+.folder-sheet .paper-section{margin-top:34px}
+.folder-sheet .paper-label{color:var(--folio-muted);font-size:9px;letter-spacing:.18em;border-color:var(--folio-rule);padding-bottom:14px;margin-bottom:24px}
+.folder-sheet .paper-copy{color:#5d5549;font-size:13px;line-height:2.05}
+.folder-sheet .paper-copy strong{color:var(--folio-ink);font-weight:700}
+.folder-sheet .project{padding:28px 0;border-color:#d7ccba;gap:26px;grid-template-columns:115px 1fr}
+.folder-sheet .project h3{color:var(--folio-ink);font-size:22px;line-height:1.4;margin-bottom:10px;letter-spacing:-.025em}
+.folder-sheet .project p{color:var(--folio-muted);font-size:10px;line-height:1.85;max-width:400px}
+.folder-sheet .project-art{height:94px;border:6px solid #fffcf5;background:#ded6c3;box-shadow:0 2px 6px #3a302020}
+.folder-sheet .tab,.folder-sheet a{color:var(--folio-accent);border-color:#b99879}
+.folder-sheet .tab{font-size:10px;padding:7px 0}
+.folder-sheet .footnote{margin-top:48px;padding-top:20px;border-top:1px solid var(--folio-rule);color:var(--folio-muted);font-size:9px;letter-spacing:.08em;flex-wrap:wrap}
+.close-folder{color:var(--folio-muted);border-color:#ccbea7;font-size:9px;letter-spacing:.07em;margin-bottom:30px;padding:9px 12px}
+.close-folder:hover{background:#e7ddca;color:var(--folio-ink)}
+.detail-sheet{padding:clamp(30px,7vw,85px);border-radius:2px}
+.detail-kicker{font-size:9px;letter-spacing:.18em;color:var(--folio-accent)}
+.detail h2{margin:22px 0 30px}
+.detail p{font-size:14px;line-height:2.05;color:#5d5549}
+.detail-image{background:#ded6c3;border:12px solid #fffcf5;box-shadow:0 4px 14px #3a302018}
+.detail-close{background:#f9f4e9;color:#655944;border-color:#c9b99e;font-size:10px}
+.detail-note{border-color:var(--folio-rule);font-size:10px;color:var(--folio-muted)}
+.project-links a{background:#faf6ed;border-color:#c9b99e;color:var(--folio-accent);font-size:10px}
+.leadership-entries{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+.leadership-entry{border-top:2px solid #977356;border-bottom:1px solid var(--folio-rule);padding:20px 0}
+.entry-index{font:8px "DM Mono",monospace;letter-spacing:.14em;color:var(--folio-muted)}
+.leadership-entry h3{font-size:21px;line-height:1.5;letter-spacing:-.025em;font-weight:400;margin:16px 0 10px}
+.leadership-entry .paper-copy{font-size:12px;margin:0}
+@media(max-width:650px){
+ .paper-focus .folder-sheet{padding:32px 25px}
+ .folder-sheet .project{grid-template-columns:80px 1fr;gap:16px;padding:24px 0}
+ .folder-sheet .project-art{height:78px;border-width:4px}
+ .folder-sheet .project h3{font-size:18px}
+ .leadership-entries{grid-template-columns:1fr;gap:18px}
+ .folder-sheet .stamp{margin-top:20px}
+}
 </style></head><body>
 <div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><button class="exit-folder" type="button" aria-label="Back to desk">← Back to desk</button><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
@@ -190,7 +240,7 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 <article class="paper folder-sheet" aria-live="polite" hidden><button class="close-folder" type="button" aria-label="Close current folder">Close folder ✕</button>
 <section class="folder-panel" data-panel="projects"><div class="paper-top"><div><h2>Projects</h2><div class="subtitle">Selected research, design and engineering work</div></div><span class="stamp">File 01</span></div><section class="paper-section"><div class="paper-label">Select an entry to open its project file</div><div id="projects"></div></section></section>
 <section class="folder-panel" data-panel="experience" hidden><div class="paper-top"><div><h2>Experience</h2><div class="subtitle">Research, development, and student engineering</div></div><span class="stamp">File 02</span></div><section class="paper-section"><div class="paper-label">Work and research</div><p class="paper-copy"><a href="https://www.linkedin.com/in/michael-jacob-castro/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a> · Professional profile and experience</p><p class="paper-copy"><strong>UB DRONES Lab</strong> — Supporting robotics research and reinforcement-learning experiments.</p><p class="paper-copy"><strong>Techniglass</strong> — Engineering internship focused on product development, PCB design and technical research.</p><p class="paper-copy"><strong>UB Space Bulls</strong> — Embedded firmware and rover communications.</p></section></section>
-<section class="folder-panel" data-panel="leadership" hidden><div class="paper-top"><div><h2>Leadership</h2><div class="subtitle">Building with and for others</div></div><span class="stamp">File 03</span></div><section class="paper-section"><div class="paper-label">Involvement</div><p class="paper-copy"><strong>Theta Tau</strong> — Mechatronics lead for a class project.</p><p class="paper-copy"><strong>Accessibility by Design</strong> — Developing an accessibility-centered engineering initiative and planning community hackathons.</p></section></section>
+<section class="folder-panel" data-panel="leadership" hidden><div class="paper-top"><div><h2>Leadership</h2><div class="subtitle">Building with and for others</div></div><span class="stamp">File 03</span></div><section class="paper-section"><div class="paper-label">Involvement</div><div class="leadership-entries"><div class="leadership-entry"><span class="entry-index">01 / CIVIC ENGAGEMENT</span><h3>TAP · NYCLU</h3><p class="paper-copy">Leadership involvement with TAP at the New York Civil Liberties Union.</p></div><div class="leadership-entry"><span class="entry-index">02 / LEADERSHIP</span><h3>Leadership Initiatives</h3><p class="paper-copy">Leadership involvement with Leadership Initiatives.</p></div></div><p class="paper-copy"><strong>Theta Tau</strong> — Mechatronics lead for a class project.</p><p class="paper-copy"><strong>Accessibility by Design</strong> — Developing an accessibility-centered engineering initiative and planning community hackathons.</p></section></section>
 <section class="folder-panel" data-panel="about" hidden><div class="paper-top"><div><h2>About Me</h2><div class="subtitle">Michael Castro · Electrical Engineering</div></div><span class="stamp">File 04</span></div><section class="paper-section"><div class="paper-label">A brief introduction</div><p class="paper-copy">I'm an electrical engineering student at the University at Buffalo. I enjoy robotics, embedded systems and research—especially the work of turning ideas into things that function in the real world.</p><p class="paper-copy">I'm also interested in designing technology that more people can access and use.</p><p class="paper-copy">Connect with me on <a href="https://www.linkedin.com/in/michael-jacob-castro/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>. My work and code are available on <a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer">GitHub ↗</a>.</p></section></section>
 <div class="footnote"><span>MC / PERSONAL FILES / 2026</span><a href="https://www.linkedin.com/in/michael-jacob-castro/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div></article></main></div><div class="camera-hint">Scroll down toward the desk · Scroll up to return ↑</div></div></div>
 <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title" aria-hidden="true"><article class="detail-sheet"><button class="detail-close" id="close" aria-label="Close project details">✕ Close page</button><div class="detail-kicker" id="detail-kicker"></div><h2 id="detail-title"></h2><div class="detail-image" id="detail-image"></div><div id="detail-body"></div><div class="detail-note">Project notes · More documentation and original photographs coming soon.</div></article></div>
