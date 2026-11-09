@@ -101,16 +101,38 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 .folder-sheet .paper-label{border-color:#655d51;color:#ae9e83}.folder-sheet .paper-copy{color:#c8bca6}.folder-sheet .paper-top{border-color:#c3b69e}.folder-sheet .stamp{color:#c5aa8c;border-color:#987c60}.folder-sheet .project{border-color:#504a40}.folder-sheet .project h3{color:#eee3d0}.folder-sheet .project p{color:#ad9e88}.folder-sheet .project-art{border-color:#4d4439}.folder-sheet .tab{color:#d5ab87;border-color:#bd8769}.folder-sheet .footnote{color:#a89a81}.folder-sheet a{color:#d4b08e}
 .folder-panel[hidden]{display:none!important}
 @media(max-width:660px){.folder-tray{grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 12px}.folder-tile{min-height:92px}.folder-label{font-size:14px}}
+
+/* Warm honey-walnut desk contrasts with cool, aged, dark-oak floorboards. */
+.camera-floor{background:repeating-linear-gradient(89deg,#252521 0 100px,#3b3933 102px 104px,#302e2a 106px 210px)!important}
+.scene-desk{background:repeating-linear-gradient(91deg,#885f3b 0 107px,#ac7849 109px 114px,#795334 115px 226px)!important}
+.folder-desk{background:repeating-linear-gradient(90deg,#765034 0 140px,#9a6b44 143px 150px,#b18352 151px 280px)!important}
+.folder-desk:before{background:radial-gradient(ellipse at 42% 18%,#f5cb8350,transparent 60%),linear-gradient(90deg,#190e064d,transparent 30%,transparent 70%,#160d064d)!important}
+.folder-tray{max-width:820px;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 32px;margin:25px auto 26px;padding:5px}
+.folder-tile{height:clamp(130px,17vh,190px);min-height:130px;padding:32px 24px 16px;border-radius:2px;background:linear-gradient(140deg,#302b27,#151715)!important;box-shadow:9px 12px 20px #1c100a91,1px 2px 2px #0009;display:flex;flex-direction:column;justify-content:space-between}
+.folder-tile:nth-child(2){transform:rotate(1.6deg)}.folder-tile:nth-child(3){transform:rotate(-2deg)}.folder-tile:nth-child(4){transform:rotate(.5deg)}
+.folder-tile:before{background:#302b27}
+.folder-tile:hover,.folder-tile[aria-pressed="true"]{transform:translateY(-9px) rotate(0deg)!important;background:linear-gradient(140deg,#534437,#22211e)!important}
+.folder-label{font-size:clamp(18px,2.8vw,27px);font-family:"Libre Baskerville",Georgia,serif;color:#f6e9cf}
+.folder-hint{font-size:10px;color:#bdb19e}
+.folder-sheet[hidden]{display:none!important}
+.folder-sheet{position:relative;margin-top:20px}
+.close-folder{display:block;margin:0 0 23px auto;background:transparent;color:#e2c5a5;border:1px solid #7b6a56;padding:8px 14px;font:11px "DM Mono",monospace}
+.close-folder:hover{background:#3c3028}
+.paper-focus .desk-caption{margin-bottom:22px}
+.paper-focus.folder-open .folder-tray{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.paper-focus.folder-open .folder-tile{height:75px;min-height:75px;padding:20px 12px 8px}
+.paper-focus.folder-open .folder-label{font-size:12px}.paper-focus.folder-open .folder-hint{display:none}
+@media(max-width:650px){.folder-tray{gap:18px 13px}.folder-tile{height:140px;padding:27px 13px 12px}.folder-label{font-size:17px}.paper-focus.folder-open .folder-tray{grid-template-columns:repeat(2,minmax(0,1fr))}.paper-focus.folder-open .folder-tile{height:58px;min-height:58px}}
 </style></head><body>
 <div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
 <div class="folder-tray" aria-label="Portfolio folders">
-<button class="folder-tile" data-folder="projects" aria-pressed="true"><span class="folder-label">01 / Projects</span><span class="folder-hint">Research · Engineering</span></button>
+<button class="folder-tile" data-folder="projects" aria-pressed="false"><span class="folder-label">01 / Projects</span><span class="folder-hint">Research · Engineering</span></button>
 <button class="folder-tile" data-folder="experience" aria-pressed="false"><span class="folder-label">02 / Experience</span><span class="folder-hint">Work · Research</span></button>
 <button class="folder-tile" data-folder="leadership" aria-pressed="false"><span class="folder-label">03 / Leadership</span><span class="folder-hint">Teams · Initiative</span></button>
 <button class="folder-tile" data-folder="about" aria-pressed="false"><span class="folder-label">04 / About Me</span><span class="folder-hint">The person behind the work</span></button>
 </div>
-<article class="paper folder-sheet" aria-live="polite">
+<article class="paper folder-sheet" aria-live="polite" hidden><button class="close-folder" type="button" aria-label="Close current folder">Close folder ✕</button>
 <section class="folder-panel" data-panel="projects"><div class="paper-top"><div><h2>Projects</h2><div class="subtitle">Selected research, design and engineering work</div></div><span class="stamp">File 01</span></div><section class="paper-section"><div class="paper-label">Select an entry to open its project file</div><div id="projects"></div></section></section>
 <section class="folder-panel" data-panel="experience" hidden><div class="paper-top"><div><h2>Experience</h2><div class="subtitle">Research, development, and student engineering</div></div><span class="stamp">File 02</span></div><section class="paper-section"><div class="paper-label">Work and research</div><p class="paper-copy"><strong>UB DRONES Lab</strong> — Supporting robotics research and reinforcement-learning experiments.</p><p class="paper-copy"><strong>Techniglass</strong> — Engineering internship focused on product development, PCB design and technical research.</p><p class="paper-copy"><strong>UB Space Bulls</strong> — Embedded firmware and rover communications.</p></section></section>
 <section class="folder-panel" data-panel="leadership" hidden><div class="paper-top"><div><h2>Leadership</h2><div class="subtitle">Building with and for others</div></div><span class="stamp">File 03</span></div><section class="paper-section"><div class="paper-label">Involvement</div><p class="paper-copy"><strong>Theta Tau</strong> — Mechatronics lead for a class project.</p><p class="paper-copy"><strong>Accessibility by Design</strong> — Developing an accessibility-centered engineering initiative and planning community hackathons.</p></section></section>
@@ -130,7 +152,9 @@ const projects=[
 {id:"techniglass",n:"03",type:"Internship / Product development",title:"Techniglass",summary:"PCB design, prototyping, and product engineering.",drawing:"hardware",body:["At Techniglass, I contribute to the development of a new engineering product alongside experienced engineers.","My work spans research, PCB design, mechanical considerations, product development, and supplier research. Public-facing technical details will be added where appropriate."]},
 {id:"abd",n:"04",type:"Community / Accessibility",title:"Accessibility by Design",summary:"Making engineering and technology more accessible.",drawing:"access",body:["Accessibility by Design is an initiative focused on engineering accessibility and the people affected by design decisions.","The goal is to connect technical work with meaningful access, including community projects and accessibility-focused hackathons."]}
 ];
-document.querySelectorAll('.folder-tile').forEach(button=>button.addEventListener('click',()=>{const choice=button.dataset.folder;document.querySelectorAll('.folder-tile').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('.folder-panel').forEach(p=>p.hidden=p.dataset.panel!==choice);const focus=document.getElementById('paper-focus');focus.scrollTo({top:0,behavior:'smooth'});}));
+const folderSheet=document.querySelector('.folder-sheet'),folderTray=document.querySelector('.folder-tray');
+document.querySelectorAll('.folder-tile').forEach(button=>button.addEventListener('click',()=>{const choice=button.dataset.folder;document.querySelectorAll('.folder-tile').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('.folder-panel').forEach(p=>p.hidden=p.dataset.panel!==choice);folderSheet.hidden=false;document.getElementById('paper-focus').classList.add('folder-open');folderSheet.scrollIntoView({block:'nearest',behavior:'smooth'});}));
+document.querySelector('.close-folder').addEventListener('click',()=>{folderSheet.hidden=true;document.getElementById('paper-focus').classList.remove('folder-open');folderTray.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));folderTray.querySelector('button').focus()});
 const root=document.getElementById("projects");
 projects.forEach(p=>{const row=document.createElement("div");row.className="project";row.innerHTML='<div class="project-art" aria-hidden="true">'+drawings[p.drawing]+'</div><div><h3>'+p.title+'</h3><p>'+p.summary+'</p><button class="tab" type="button" data-project="'+p.id+'">Open project file ↗</button></div>';root.appendChild(row)});
 const modal=document.getElementById("detail"),close=document.getElementById("close");let previousFocus=null;
@@ -148,7 +172,7 @@ const retreat=ease(t/.34),tilt=ease((t-.17)/.40),push=ease((t-.55)/.27),focus=ea
 world.style.setProperty('--retreat',retreat.toFixed(4));world.style.setProperty('--tilt',tilt.toFixed(4));world.style.setProperty('--push',push.toFixed(4));
 paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));viewport.style.setProperty('--paper-opacity',focus.toFixed(4));
 hint.style.setProperty('--hint',String(clamp((.75-t)*5)));
-const now=t>.955;if(now!==active){paper.classList.toggle('active',now);active=now}
+const now=t>.80;if(now!==active){paper.classList.toggle('active',now);active=now}
 }
 addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});addEventListener('resize',update);update();
 })();
@@ -176,7 +200,7 @@ const camera=new THREE.PerspectiveCamera(62,1,.05,70);
 function texture(draw,w=1024,h=512){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');draw(ctx,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);return t}
 function rand(seed){let a=seed;return()=>{a=(a*1664525+1013904223)>>>0;return a/4294967296}}
 const chalk=texture((c,w,h)=>{const r=rand(809);c.fillStyle='#254034';c.fillRect(0,0,w,h);for(let i=0;i<30000;i++){const x=r()*w,y=r()*h;const v=Math.floor(85+r()*120);c.fillStyle='rgba('+v+','+v+','+v+','+(r()*.075)+')';c.fillRect(x,y,r()*12+1,r()*2+1)}for(let i=0;i<42;i++){c.strokeStyle='rgba(204,218,197,'+(r()*.05)+')';c.lineWidth=9+r()*40;c.beginPath();c.ellipse(r()*w,r()*h,40+r()*190,10+r()*55,r()*.8,0,Math.PI*2);c.stroke()}c.textAlign='center';c.shadowColor='#ecede2';c.shadowBlur=5;c.fillStyle='#e1e4d5';c.font='105px Georgia';c.fillText('Carpe Diem',w/2,h*.43);c.shadowBlur=0;c.fillStyle='#d8dccd';c.font='italic 36px Georgia';c.fillText('Seize the day. Make your lives extraordinary.',w/2,h*.60);c.strokeStyle='#d5d9c6';c.lineWidth=3;c.beginPath();c.moveTo(w*.30,h*.48);c.lineTo(w*.70,h*.48);c.stroke()},1024,512);
-const wood=texture((c,w,h)=>{const r=rand(144);c.fillStyle='#342015';c.fillRect(0,0,w,h);for(let i=0;i<500;i++){const x=r()*w;c.fillStyle='rgba('+(60+Math.floor(r()*85))+',42,25,'+(r()*.22)+')';c.fillRect(x,0,1+r()*6,h)}for(let i=0;i<17;i++){const x=i*w/17;c.strokeStyle='rgba(26,13,8,.32)';c.lineWidth=2;c.beginPath();c.moveTo(x,0);c.lineTo(x+7,h);c.stroke()}},1024,512);
+const wood=texture((c,w,h)=>{const r=rand(144);c.fillStyle='#8b633f';c.fillRect(0,0,w,h);for(let i=0;i<500;i++){const x=r()*w;c.fillStyle='rgba('+(60+Math.floor(r()*85))+',42,25,'+(r()*.22)+')';c.fillRect(x,0,1+r()*6,h)}for(let i=0;i<17;i++){const x=i*w/17;c.strokeStyle='rgba(26,13,8,.32)';c.lineWidth=2;c.beginPath();c.moveTo(x,0);c.lineTo(x+7,h);c.stroke()}},1024,512);
 const paperTexture=texture((c,w,h)=>{const r=rand(73);c.fillStyle='#171717';c.fillRect(0,0,w,h);for(let i=0;i<18000;i++){c.fillStyle='rgba(69,46,22,'+(r()*.025)+')';c.fillRect(r()*w,r()*h,1,1)}c.fillStyle='#dfd2b7';c.textAlign='left';c.font='46px Georgia';c.fillText('Michael Castro',70,100);c.font='17px monospace';c.fillText('ELECTRICAL ENGINEERING  /  RESEARCH  /  PROJECTS',70,138);c.fillRect(70,164,w-140,2);c.font='22px Georgia';c.fillText('Selected work',70,212);const lines=['UB DRONES Lab — Robotics & research','UB Space Bulls — Embedded firmware','Techniglass — Product development','Accessibility by Design'];c.font='18px Georgia';lines.forEach((line,i)=>{c.fillText(line,90,270+i*58);c.fillStyle='#857665';c.fillRect(90,284+i*58,w-185,1);c.fillStyle='#342c23'})},768,1024);
 function mat(hex,roughness=1){return new THREE.MeshStandardMaterial({color:hex,roughness})}
 function box(w,h,d,m,x,y,z){let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o}
@@ -186,8 +210,9 @@ const frame=mat('#5d3921',.7);box(8.6,4.7,.24,frame,0,1.55,-5.12);
 const blackboard=new THREE.Mesh(new THREE.PlaneGeometry(8.32,4.42),new THREE.MeshStandardMaterial({map:chalk,roughness:1,metalness:0}));blackboard.position.set(0,1.55,-4.99);scene.add(blackboard);
 box(8.95,.16,.43,mat('#805b37'),0,-.86,-4.89);
 box(.42,.045,.07,mat('#d7d3bd'),-2.7,-.72,-4.58);
-const floor=box(40,.1,40,new THREE.MeshStandardMaterial({map:wood,roughness:.9}),0,-2.45,4);
-const deskMat=new THREE.MeshStandardMaterial({map:wood,color:'#8d6b55',roughness:.72});
+const floorWood=texture((c,w,h)=>{const r=rand(815);c.fillStyle='#37352f';c.fillRect(0,0,w,h);for(let i=0;i<700;i++){c.fillStyle='rgba(155,145,125,'+(r()*.09)+')';c.fillRect(r()*w,0,1+r()*3,h)}for(let i=1;i<12;i++){c.fillStyle='#211e1b88';c.fillRect(i*w/12,0,2,h)}},1024,512);
+const floor=box(40,.1,40,new THREE.MeshStandardMaterial({map:floorWood,roughness:.95}),0,-2.45,4);
+const deskMat=new THREE.MeshStandardMaterial({map:wood,color:'#d6ab7a',roughness:.7});
 box(4.15,.15,2.45,deskMat,0,-.45,2.25);
 for(const x of [-1.8,1.8])for(const z of [1.2,3.25])box(.13,1.85,.13,mat('#473022'),x,-1.42,z);
 const folderNames=['PROJECTS','EXPERIENCE','LEADERSHIP','ABOUT ME'];
@@ -220,11 +245,11 @@ camera.position.y=lerp(camera.position.y,2.25,approach);
 camera.position.z=lerp(camera.position.z,3.25,approach);
 camera.lookAt(look);
 renderer.render(scene,camera);
-const focus=ease((current-.79)/.18);
+const focus=ease((current-.65)/.16);
 paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));
 viewport.style.setProperty('--paper-opacity',focus.toFixed(4));
 hint.style.setProperty('--hint',String(clamp((.76-current)*5)));
-const enable=current>.955;if(enable!==active){paper.classList.toggle('active',enable);active=enable}
+const enable=current>.795;if(enable!==active){paper.classList.toggle('active',enable);active=enable}
 }
 resize();addEventListener('resize',resize);viewport.classList.add('three-ready');
 /* Prevent the paper's internal scrolling from trapping a scroll back to the board. */
