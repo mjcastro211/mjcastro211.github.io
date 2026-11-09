@@ -81,12 +81,20 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 .camera-viewport:before{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 42%,#08090880 100%);opacity:calc(1 - var(--paper-opacity,0));}
 @media(max-width:650px){.camera-journey{height:430svh}.camera-wall{inset:-8vh -30vw 0}.scene-board h1{font-size:clamp(55px,12vw,100px)}.paper-focus{transform:translateY(calc((1 - var(--paper-scale,0)) * 28vh)) scale(calc(.35 + var(--paper-scale,0) * .65))}}
 @media(prefers-reduced-motion:reduce){.camera-journey{height:auto}.camera-world{display:none}.paper-focus{transform:none}}
+
+#classroom-3d{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;opacity:0;transition:opacity .6s;pointer-events:none}
+.camera-viewport.three-ready #classroom-3d{opacity:1}
+.camera-viewport.three-ready .camera-world{visibility:hidden}
+.camera-viewport.three-ready .paper-focus{z-index:5}
+.camera-viewport.three-ready .camera-hint{z-index:8}
+.camera-viewport.three-ready:before,.camera-viewport.three-ready:after{z-index:4}
+@media(prefers-reduced-motion:reduce){#classroom-3d{display:none}}
 </style></head><body>
-<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make something of it.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
+<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><main class="desk" id="desk"><div class="pencil" aria-hidden="true"></div><p class="desk-caption">A few pages from my desk · Michael Castro</p><article class="paper"><div class="paper-top"><div><h2>Michael Castro</h2><div class="subtitle">Electrical Engineering · University at Buffalo<br>Robotics / Embedded Systems / Accessibility</div></div><div class="stamp">Curriculum<br>Vitae</div></div>
 <section class="paper-section"><div class="paper-label">01 / About</div><p class="paper-copy">I'm an electrical engineering student interested in robotics, research, and building things that make technology more accessible. This is a working record of the projects I've learned from along the way.</p></section>
 <section class="paper-section"><div class="paper-label">02 / Selected projects & work — click a tab to read</div><div id="projects"></div></section>
-<section class="paper-section"><div class="paper-label">03 / Elsewhere</div><p class="paper-copy">More project documentation and code can be found on <a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">my GitHub ↗</a>. This page will grow as the work does.</p></section><div class="footnote"><span>MC / NOTES & WORKS / 2026</span><a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div></article></main></div><div class="camera-hint">Scroll to move closer ↓</div></div></div>
+<section class="paper-section"><div class="paper-label">03 / Elsewhere</div><p class="paper-copy">More project documentation and code can be found on <a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">my GitHub ↗</a>. This page will grow as the work does.</p></section><div class="footnote"><span>MC / NOTES & WORKS / 2026</span><a href="https://github.com/mjcastro211" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div></article></main></div><div class="camera-hint">Scroll down toward the desk · Scroll up to return ↑</div></div></div>
 <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title" aria-hidden="true"><article class="detail-sheet"><button class="detail-close" id="close" aria-label="Close project details">✕ Close page</button><div class="detail-kicker" id="detail-kicker"></div><h2 id="detail-title"></h2><div class="detail-image" id="detail-image"></div><div id="detail-body"></div><div class="detail-note">Project notes · More documentation and original photographs coming soon.</div></article></div>
 <script>
 const drawings={
@@ -122,4 +130,76 @@ const now=t>.955;if(now!==active){paper.classList.toggle('active',now);active=no
 }
 addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});addEventListener('resize',update);update();
 })();
+</script><script type="module">
+/* WebGL scene: real camera, textured meshes, lit desk, and reversible scroll path. */
+const viewport=document.querySelector('.camera-viewport');
+const journey=document.getElementById('camera-journey');
+const paper=document.getElementById('paper-focus');
+const hint=document.querySelector('.camera-hint');
+const fallback=document.querySelector('.camera-world');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+if(!reduced.matches){
+try{
+const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js');
+const canvas=document.getElementById('classroom-3d');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.55;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#201e19');
+scene.fog=new THREE.Fog('#201e19',11,25);
+const camera=new THREE.PerspectiveCamera(62,1,.05,70);
+function texture(draw,w=1024,h=512){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');draw(ctx,w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);return t}
+function rand(seed){let a=seed;return()=>{a=(a*1664525+1013904223)>>>0;return a/4294967296}}
+const chalk=texture((c,w,h)=>{const r=rand(809);c.fillStyle='#254034';c.fillRect(0,0,w,h);for(let i=0;i<30000;i++){const x=r()*w,y=r()*h;const v=Math.floor(85+r()*120);c.fillStyle='rgba('+v+','+v+','+v+','+(r()*.075)+')';c.fillRect(x,y,r()*12+1,r()*2+1)}for(let i=0;i<42;i++){c.strokeStyle='rgba(204,218,197,'+(r()*.05)+')';c.lineWidth=9+r()*40;c.beginPath();c.ellipse(r()*w,r()*h,40+r()*190,10+r()*55,r()*.8,0,Math.PI*2);c.stroke()}c.textAlign='center';c.shadowColor='#ecede2';c.shadowBlur=5;c.fillStyle='#e1e4d5';c.font='105px Georgia';c.fillText('Carpe Diem',w/2,h*.43);c.shadowBlur=0;c.fillStyle='#d8dccd';c.font='italic 36px Georgia';c.fillText('Seize the day. Make your lives extraordinary.',w/2,h*.60);c.strokeStyle='#d5d9c6';c.lineWidth=3;c.beginPath();c.moveTo(w*.30,h*.48);c.lineTo(w*.70,h*.48);c.stroke()},1024,512);
+const wood=texture((c,w,h)=>{const r=rand(144);c.fillStyle='#64452f';c.fillRect(0,0,w,h);for(let i=0;i<500;i++){const x=r()*w;c.fillStyle='rgba('+(60+Math.floor(r()*85))+',42,25,'+(r()*.22)+')';c.fillRect(x,0,1+r()*6,h)}for(let i=0;i<17;i++){const x=i*w/17;c.strokeStyle='rgba(26,13,8,.32)';c.lineWidth=2;c.beginPath();c.moveTo(x,0);c.lineTo(x+7,h);c.stroke()}},1024,512);
+const paperTexture=texture((c,w,h)=>{const r=rand(73);c.fillStyle='#e7dcc1';c.fillRect(0,0,w,h);for(let i=0;i<18000;i++){c.fillStyle='rgba(69,46,22,'+(r()*.025)+')';c.fillRect(r()*w,r()*h,1,1)}c.fillStyle='#342c23';c.textAlign='left';c.font='46px Georgia';c.fillText('Michael Castro',70,100);c.font='17px monospace';c.fillText('ELECTRICAL ENGINEERING  /  RESEARCH  /  PROJECTS',70,138);c.fillRect(70,164,w-140,2);c.font='22px Georgia';c.fillText('Selected work',70,212);const lines=['UB DRONES Lab — Robotics & research','UB Space Bulls — Embedded firmware','Techniglass — Product development','Accessibility by Design'];c.font='18px Georgia';lines.forEach((line,i)=>{c.fillText(line,90,270+i*58);c.fillStyle='#a39985';c.fillRect(90,284+i*58,w-185,1);c.fillStyle='#342c23'})},768,1024);
+function mat(hex,roughness=1){return new THREE.MeshStandardMaterial({color:hex,roughness})}
+function box(w,h,d,m,x,y,z){let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o}
+const plaster=mat('#615a4d');box(23,14,.25,plaster,0,2.7,-5.5);
+const wallBottom=mat('#42362a');box(24,1.0,.3,wallBottom,0,-1.7,-5.32);
+const frame=mat('#5d3921',.7);box(8.6,4.7,.24,frame,0,1.55,-5.12);
+const blackboard=new THREE.Mesh(new THREE.PlaneGeometry(8.32,4.42),new THREE.MeshStandardMaterial({map:chalk,roughness:1,metalness:0}));blackboard.position.set(0,1.55,-4.99);scene.add(blackboard);
+box(8.95,.16,.43,mat('#805b37'),0,-.86,-4.89);
+box(.42,.045,.07,mat('#d7d3bd'),-2.7,-.72,-4.58);
+const floor=box(40,.1,40,new THREE.MeshStandardMaterial({map:wood,roughness:.9}),0,-2.45,4);
+const deskMat=new THREE.MeshStandardMaterial({map:wood,roughness:.66});
+box(4.15,.15,2.45,deskMat,0,-.45,2.25);
+for(const x of [-1.8,1.8])for(const z of [1.2,3.25])box(.13,1.85,.13,mat('#473022'),x,-1.42,z);
+const p=new THREE.Mesh(new THREE.BoxGeometry(1.45,.012,1.91),new THREE.MeshStandardMaterial({map:paperTexture,roughness:1}));p.rotation.y=-.055;p.position.set(-.1,-.358,2.15);scene.add(p);
+const notebook=box(.72,.028,1.15,mat('#3a4741'),-1.42,-.34,2.05);notebook.rotation.y=.16;
+const penMat=mat('#bb8a37',.45),pen=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.92,10),penMat);pen.rotation.set(Math.PI/2,.1,.4);pen.position.set(1.14,-.32,2.04);scene.add(pen);
+const lampBase=new THREE.Mesh(new THREE.CylinderGeometry(.22,.24,.09,24),mat('#48463b',.4));lampBase.position.set(1.57,-.31,1.5);scene.add(lampBase);
+const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.8,12),mat('#4d5149',.45));stem.position.set(1.57,.13,1.5);scene.add(stem);
+const shade=new THREE.Mesh(new THREE.ConeGeometry(.35,.32,24,1,true),new THREE.MeshStandardMaterial({color:'#686954',roughness:.75,side:THREE.DoubleSide}));shade.rotation.x=Math.PI;shade.position.set(1.57,.53,1.5);scene.add(shade);
+scene.add(new THREE.HemisphereLight(0xc9dbd4,0x36251a,1.6));
+const warm=new THREE.PointLight(0xffdfaf,38,10);warm.position.set(1.2,2.3,3.2);scene.add(warm);
+const fill=new THREE.DirectionalLight(0xd6dbed,1.7);fill.position.set(-3,4,4);scene.add(fill);
+let targetScroll=0,current=0,dirty=true,active=false;
+const clamp=v=>Math.max(0,Math.min(1,v)),ease=v=>{v=clamp(v);return v*v*(3-2*v)},lerp=(a,b,t)=>a+(b-a)*t;
+function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<680?75:62;camera.updateProjectionMatrix();dirty=true}
+function scrollProgress(){return clamp(-journey.getBoundingClientRect().top/Math.max(1,journey.offsetHeight-innerHeight))}
+function animate(){requestAnimationFrame(animate);targetScroll=scrollProgress();const old=current;current=lerp(current,targetScroll,.14);if(Math.abs(current-targetScroll)<.0001)current=targetScroll;
+if(!dirty&&Math.abs(old-current)<.00005)return;dirty=false;
+const back=ease(current/.40),lower=ease((current-.25)/.44),approach=ease((current-.66)/.30);
+camera.position.set(0,lerp(1.6,1.45,back),lerp(3.15,6.0,back));
+const look=new THREE.Vector3(0,lerp(1.55,-.36,lower),lerp(-5,2.1,lower));
+camera.position.y=lerp(camera.position.y,2.25,approach);
+camera.position.z=lerp(camera.position.z,3.25,approach);
+camera.lookAt(look);
+renderer.render(scene,camera);
+const focus=ease((current-.79)/.18);
+paper.style.setProperty('--paper-opacity',focus.toFixed(4));paper.style.setProperty('--paper-scale',focus.toFixed(4));
+viewport.style.setProperty('--paper-opacity',focus.toFixed(4));
+hint.style.setProperty('--hint',String(clamp((.76-current)*5)));
+const enable=current>.955;if(enable!==active){paper.classList.toggle('active',enable);active=enable}
+}
+resize();addEventListener('resize',resize);viewport.classList.add('three-ready');
+/* Prevent the paper's internal scrolling from trapping a scroll back to the board. */
+paper.addEventListener('wheel',event=>{if(!active)return;if(event.deltaY<0&&paper.scrollTop<=1){event.preventDefault();window.scrollBy({top:event.deltaY,behavior:'instant'})}},{passive:false});
+animate();
+}catch(error){console.warn('3D rendering unavailable; using the CSS scene.',error)}
+}
 </script></body></html>
