@@ -6,15 +6,12 @@
   "./photos/mlh-badges.jpg",
   "",
   {
-    "src": "./photos/electronics-prototyping.jpg",
-    "label": "Electronics Prototyping"
+    "src": "./photos/electronics-prototyping.jpg"
   },
   {
-    "src": "./photos/unitree-robot.jpg",
-    "label": "Unitree Robot"
+    "src": "./photos/unitree-robot.jpg"
   },
   {
-    "src": "./photos/costume-night.jpg",
-    "label": "Costume Night"
+    "src": "./photos/costume-night.jpg"
   }
 ]
