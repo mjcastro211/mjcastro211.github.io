@@ -5,7 +5,16 @@
   "",
   "./photos/mlh-badges.jpg",
   "",
-  "",
-  "",
-  ""
+  {
+    "src": "./photos/electronics-prototyping.jpg",
+    "label": "Electronics Prototyping"
+  },
+  {
+    "src": "./photos/unitree-robot.jpg",
+    "label": "Unitree Robot"
+  },
+  {
+    "src": "./photos/costume-night.jpg",
+    "label": "Costume Night"
+  }
 ]
