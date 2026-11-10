@@ -228,6 +228,12 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
  .leadership-entries{grid-template-columns:1fr;gap:18px}
  .folder-sheet .stamp{margin-top:20px}
 }
+
+/* Closed folders never create a nested scrolling surface over the classroom. */
+.paper-focus:not(.folder-open){overflow:clip;overscroll-behavior:auto;pointer-events:none}
+.three-ready .paper-focus:not(.folder-open) .folder-tile{pointer-events:none}
+.three-ready .paper-focus.active:not(.folder-open) .folder-tile{pointer-events:auto}
+.paper-focus.folder-open{overflow:auto;pointer-events:auto}
 </style></head><body>
 <div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><button class="exit-folder" type="button" aria-label="Back to desk">← Back to desk</button><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
@@ -355,21 +361,19 @@ fetch('./photos.json?v=20261110-posters',{cache:'no-store'}).then(response=>resp
  if(!Array.isArray(entries))return;
  entries.slice(0,photoBoards.length).forEach((entry,i)=>{
  const url=typeof entry==='string'?entry:entry?.src;
- const label=typeof entry==='object'?entry?.label:'';
+ const framed=typeof entry==='object';
  if(typeof url!=='string'||!url.trim())return;
  new THREE.TextureLoader().load(url,loaded=>{
  loaded.colorSpace=THREE.SRGBColorSpace;
  const target=posterLayouts[i][2]/posterLayouts[i][3];
- if(label){
+ if(framed){
  const image=loaded.image;
  const composed=texture((ctx,w,h)=>{
  ctx.fillStyle='#eee5d1';ctx.fillRect(0,0,w,h);
- const pad=24,areaW=w-pad*2,areaH=h-100;
+ const pad=24,areaW=w-pad*2,areaH=h-pad*2;
  const scale=Math.min(areaW/image.width,areaH/image.height);
  const iw=image.width*scale,ih=image.height*scale;
  ctx.drawImage(image,(w-iw)/2,pad+(areaH-ih)/2,iw,ih);
- ctx.fillStyle='#3e372d';ctx.font='22px Georgia';ctx.textAlign='center';
- ctx.fillText(label,w/2,h-32,w-40);
  },768,Math.round(768/target));
  photoBoards[i].material.map=composed;loaded.dispose();
  }else{
