@@ -401,11 +401,36 @@ const cover=new THREE.Mesh(new THREE.BoxGeometry(1.50,.028,.83),folderMat);cover
 const labelCanvas=texture((ctx,w,h)=>{ctx.clearRect(0,0,w,h);ctx.fillStyle='#cabb9c';ctx.fillRect(45,65,w-90,h-130);ctx.fillStyle='#302920';ctx.font='bold 34px Georgia';ctx.textAlign='center';ctx.fillText(name,w/2,h/2+12)},512,256);
 const label=new THREE.Mesh(new THREE.PlaneGeometry(1.13,.39),new THREE.MeshBasicMaterial({map:labelCanvas,transparent:true,side:THREE.DoubleSide}));label.rotation.x=-Math.PI/2;label.rotation.z=cover.rotation.y;label.position.set(x,-.326,z);scene.add(label);
 });
-const notebook=box(.72,.028,1.15,mat('#3a4741'),-1.42,-.34,2.05);notebook.rotation.y=.16;
 const penMat=mat('#bb8a37',.45),pen=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.92,10),penMat);pen.rotation.set(Math.PI/2,.1,.4);pen.position.set(1.14,-.32,2.04);scene.add(pen);
-const lampBase=new THREE.Mesh(new THREE.CylinderGeometry(.22,.24,.09,24),mat('#48463b',.4));lampBase.position.set(1.57,-.31,1.5);scene.add(lampBase);
-const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.8,12),mat('#4d5149',.45));stem.position.set(1.57,.13,1.5);scene.add(stem);
-const shade=new THREE.Mesh(new THREE.ConeGeometry(.35,.32,24,1,true),new THREE.MeshStandardMaterial({color:'#686954',roughness:.75,side:THREE.DoubleSide}));shade.rotation.x=Math.PI;shade.position.set(1.57,.53,1.5);scene.add(shade);
+/* A warm ivory and brushed-brass desk lamp, clear of the folder covers. */
+const brass=new THREE.MeshStandardMaterial({color:'#b99759',metalness:.72,roughness:.3});
+const ivory=new THREE.MeshStandardMaterial({color:'#eee1c6',roughness:.52,metalness:.06,side:THREE.DoubleSide});
+const lampX=1.66,lampZ=1.22;
+function lampCylinder(rt,rb,height,material,x,y,z){
+ const mesh=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,height,48),material);
+ mesh.position.set(x,y,z);scene.add(mesh);return mesh;
+}
+lampCylinder(.235,.26,.045,brass,lampX,-.335,lampZ);
+lampCylinder(.205,.235,.065,ivory,lampX,-.28,lampZ);
+lampCylinder(.11,.15,.025,brass,lampX,-.235,lampZ);
+const armCurve=new THREE.CatmullRomCurve3([
+ new THREE.Vector3(lampX,-.23,lampZ),
+ new THREE.Vector3(lampX,.30,lampZ),
+ new THREE.Vector3(lampX-.05,.69,lampZ),
+ new THREE.Vector3(lampX-.19,.76,lampZ+.035)
+]);
+const lampArm=new THREE.Mesh(new THREE.TubeGeometry(armCurve,40,.024,12,false),brass);scene.add(lampArm);
+const shadeX=lampX-.19,shadeZ=lampZ+.035;
+lampCylinder(.15,.335,.28,ivory,shadeX,.66,shadeZ);
+lampCylinder(.155,.155,.025,brass,shadeX,.81,shadeZ);
+lampCylinder(.055,.055,.055,brass,shadeX,.845,shadeZ);
+const rim=new THREE.Mesh(new THREE.TorusGeometry(.335,.012,12,64),brass);
+rim.rotation.x=Math.PI/2;rim.position.set(shadeX,.52,shadeZ);scene.add(rim);
+const diffuser=new THREE.Mesh(new THREE.CircleGeometry(.312,48),new THREE.MeshStandardMaterial({color:'#fff1c9',emissive:'#ffd69a',emissiveIntensity:.45,side:THREE.DoubleSide,roughness:1}));
+diffuser.rotation.x=Math.PI/2;diffuser.position.set(shadeX,.53,shadeZ);scene.add(diffuser);
+const lampGlow=new THREE.PointLight(0xffdda7,1.5,3.5,2);lampGlow.position.set(shadeX,.45,shadeZ);scene.add(lampGlow);
+const switchButton=new THREE.Mesh(new THREE.SphereGeometry(.028,16,12),brass);
+switchButton.scale.y=.5;switchButton.position.set(lampX+.12,-.24,lampZ+.08);scene.add(switchButton);
 scene.add(new THREE.HemisphereLight(0xc9dbd4,0x36251a,1.6));
 const warm=new THREE.PointLight(0xffdfaf,38,10);warm.position.set(1.2,2.3,3.2);scene.add(warm);
 const fill=new THREE.DirectionalLight(0xd6dbed,1.7);fill.position.set(-3,4,4);scene.add(fill);
