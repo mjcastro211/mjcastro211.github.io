@@ -234,8 +234,21 @@ box-shadow:inset 0 0 0 3px #9d7951,inset 0 0 0 12px #25180f,inset 0 0 100px 40px
 .three-ready .paper-focus:not(.folder-open) .folder-tile{pointer-events:none}
 .three-ready .paper-focus.active:not(.folder-open) .folder-tile{pointer-events:auto}
 .paper-focus.folder-open{overflow:auto;pointer-events:auto}
+
+.lamp-hit{display:none;position:absolute;left:var(--lamp-x);top:var(--lamp-y);width:var(--lamp-w);height:var(--lamp-h);z-index:12;border:0;background:transparent;padding:0;cursor:pointer;border-radius:45%;touch-action:pan-y}
+.lamp-hit.available{display:block}
+.lamp-hit:hover{outline:1px solid #f3dfaa80;outline-offset:4px}
+.lamp-hit:focus-visible{outline:2px solid #f3dfaa}
+.lamp-controls{position:absolute;right:20px;bottom:22px;z-index:30;width:min(280px,calc(100% - 40px));background:#f3eddf;color:#302c25;padding:22px;border:1px solid #c9b99e;box-shadow:0 12px 35px #0006;border-radius:6px;font:11px "DM Mono",monospace}
+.lamp-controls[hidden]{display:none}
+.lamp-control-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.lamp-control-title strong{font:20px Georgia,serif}
+.lamp-controls button{border:1px solid #b9a586;background:#faf6ed;color:#5c452e;border-radius:3px;padding:8px 11px;font:10px "DM Mono",monospace}
+.lamp-controls label{display:flex;justify-content:space-between;gap:15px;margin-bottom:14px}
+.lamp-controls input{width:100%;accent-color:#95734b;cursor:pointer}
+.lamp-power{margin-top:16px;width:100%}
 </style></head><body>
-<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
+<div class="camera-journey" id="camera-journey" aria-label="Scroll to look from the chalkboard down to the desk"><div class="camera-viewport"><canvas id="classroom-3d" aria-hidden="true"></canvas><button class="lamp-hit" aria-label="Adjust desk lamp brightness" aria-expanded="false" aria-controls="lamp-controls"></button><section class="lamp-controls" id="lamp-controls" aria-label="Desk lamp controls" hidden><div class="lamp-control-title"><strong>Desk lamp</strong><button type="button" class="lamp-dismiss" aria-label="Close lamp controls">✕</button></div><label for="lamp-brightness">Brightness <output id="lamp-value" for="lamp-brightness">50%</output></label><input id="lamp-brightness" type="range" min="0" max="100" value="50" step="1"><button type="button" class="lamp-power">Turn off</button></section><div class="camera-world"><div class="camera-wall"><section class="board scene-board" aria-label="Chalkboard introduction"><div class="board-content"><h1>Carpe Diem.</h1><div class="chalk-line"></div><p>Seize the day. Make your lives extraordinary.</p></div><div class="scroll-cue">Step back & lower your gaze<br>↓</div><div class="chalktray"></div></section>
 </div><div class="camera-floor"><div class="floor-light"></div><div class="desk-edge"></div><div class="scene-desk"><div class="scene-paper"><div class="scene-paper-heading">Michael Castro</div><div class="scene-paper-rule"></div><div class="scene-paper-sub">ELECTRICAL ENGINEERING · RESEARCH · PROJECTS</div><div class="scene-lines"></div><div class="scene-lines short"></div><div class="scene-photo"></div><div class="scene-lines"></div><div class="scene-lines short"></div></div><div class="scene-pencil"></div><div class="scene-notebook"></div></div></div></div><div class="paper-focus" id="paper-focus"><button class="exit-folder" type="button" aria-label="Back to desk">← Back to desk</button><main class="desk folder-desk" id="desk"><p class="desk-caption">Michael Castro · Select a folder</p>
 <div class="folder-tray" aria-label="Portfolio folders">
 <button class="folder-tile" data-folder="projects" aria-pressed="false"><span class="folder-label">01 / Projects</span><span class="folder-hint">Research · Engineering</span></button>
@@ -435,6 +448,23 @@ scene.add(new THREE.HemisphereLight(0xc9dbd4,0x36251a,1.6));
 const warm=new THREE.PointLight(0xffdfaf,38,10);warm.position.set(1.2,2.3,3.2);scene.add(warm);
 const fill=new THREE.DirectionalLight(0xd6dbed,1.7);fill.position.set(-3,4,4);scene.add(fill);
 let targetScroll=0,current=0,dirty=true,active=false;
+const lampHit=document.querySelector('.lamp-hit'),lampPanel=document.getElementById('lamp-controls');
+const brightness=document.getElementById('lamp-brightness'),lampValue=document.getElementById('lamp-value'),lampPower=document.querySelector('.lamp-power');
+let lastBrightness=50;
+function applyBrightness(){
+ const value=Number(brightness.value),level=value/100;
+ lampGlow.intensity=level*12;diffuser.material.emissiveIntensity=level*1.4;
+ lampValue.textContent=value+'%';lampPower.textContent=value===0?'Turn on':'Turn off';
+ if(value>0)lastBrightness=value;dirty=true;
+}
+function closeLamp(){lampPanel.hidden=true;lampHit.setAttribute('aria-expanded','false')}
+lampHit.addEventListener('click',()=>{lampPanel.hidden=!lampPanel.hidden;lampHit.setAttribute('aria-expanded',String(!lampPanel.hidden));if(!lampPanel.hidden)brightness.focus()});
+document.querySelector('.lamp-dismiss').addEventListener('click',()=>{closeLamp();lampHit.focus()});
+brightness.addEventListener('input',applyBrightness);
+lampPower.addEventListener('click',()=>{brightness.value=Number(brightness.value)===0?lastBrightness:0;applyBrightness()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!lampPanel.hidden){closeLamp();lampHit.focus()}});
+applyBrightness();
+
 const clamp=v=>Math.max(0,Math.min(1,v)),ease=v=>{v=clamp(v);return v*v*(3-2*v)},lerp=(a,b,t)=>a+(b-a)*t;
 function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<680?75:62;camera.updateProjectionMatrix();dirty=true}
 function scrollProgress(){return clamp(-journey.getBoundingClientRect().top/Math.max(1,journey.offsetHeight-innerHeight))}
@@ -447,6 +477,16 @@ camera.position.y=lerp(camera.position.y,2.25,approach);
 camera.position.z=lerp(camera.position.z,3.25,approach);
 camera.lookAt(look);
 renderer.render(scene,camera);
+const lampPoints=[];
+for(const x of [lampX-.55,lampX+.3])for(const y of [-.38,.92])for(const z of [lampZ-.35,lampZ+.38]){
+ const p=new THREE.Vector3(x,y,z).project(camera);lampPoints.push({x:(p.x+1)*viewport.clientWidth/2,y:(1-p.y)*viewport.clientHeight/2});
+}
+const lx=lampPoints.map(p=>p.x),ly=lampPoints.map(p=>p.y);
+lampHit.style.setProperty('--lamp-x',Math.min(...lx)+'px');lampHit.style.setProperty('--lamp-y',Math.min(...ly)+'px');
+lampHit.style.setProperty('--lamp-w',(Math.max(...lx)-Math.min(...lx))+'px');lampHit.style.setProperty('--lamp-h',(Math.max(...ly)-Math.min(...ly))+'px');
+const lampAvailable=current>.25&&!paper.classList.contains('folder-open');
+lampHit.classList.toggle('available',lampAvailable);
+if(!lampAvailable)closeLamp();
 const folderButtons=document.querySelectorAll('.folder-tile');
 folderMeshes.forEach((mesh,i)=>{
  const points=[[-.75,-.415],[.75,-.415],[.75,.415],[-.75,.415]].map(([x,z])=>mesh.localToWorld(new THREE.Vector3(x,.025,z)).project(camera));
